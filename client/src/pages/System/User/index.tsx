@@ -55,8 +55,9 @@ export default function UserManagePage() {
 
   const openEdit = (record: UserItem) => {
     setEditingUser(record)
+    const formVals = { ...record } as Record<string, unknown>
     form.setFieldsValue({
-      ...record,
+      ...formVals,
       roleIds: record.roles?.map(r => r.id) || []
     })
     setModalOpen(true)
@@ -75,8 +76,17 @@ export default function UserManagePage() {
   const handleSubmit = async () => {
     try {
       const values: CreateUserData = await form.validateFields()
+      
       if (editingUser) {
-        await userApi.update(editingUser.id, values)
+        const payload: Partial<CreateUserData> = { ...values }
+        
+        // 如果密码没有修改（和原加密密码相同）或为空，则不要提交密码字段
+        const originalPassword = editingUser.password
+        if (!payload.password || payload.password === originalPassword) {
+          delete payload.password
+        }
+        
+        await userApi.update(editingUser.id, payload)
         message.success('更新成功')
       } else {
         await userApi.create(values)
@@ -84,8 +94,8 @@ export default function UserManagePage() {
       }
       setModalOpen(false)
       await loadData()
-    } catch (err: any) {
-      if (err.message) {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message) {
         message.error(err.message)
       }
     }

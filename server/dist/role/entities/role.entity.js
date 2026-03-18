@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Role = void 0;
 const typeorm_1 = require("typeorm");
+const menu_entity_1 = require("../../menu/entities/menu.entity");
 let Role = class Role {
     id;
     name;
     code;
     description;
+    menus;
 };
 exports.Role = Role;
 __decorate([
@@ -34,6 +36,15 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Role.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => menu_entity_1.Menu),
+    (0, typeorm_1.JoinTable)({
+        name: 'role_menus',
+        joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+        inverseJoinColumn: { name: 'menu_id', referencedColumnName: 'id' },
+    }),
+    __metadata("design:type", Array)
+], Role.prototype, "menus", void 0);
 exports.Role = Role = __decorate([
     (0, typeorm_1.Entity)('roles')
 ], Role);

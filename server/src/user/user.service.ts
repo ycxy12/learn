@@ -16,7 +16,7 @@ export class UserService {
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepo.findOne({ 
+    return this.userRepo.findOne({
       where: { email },
       relations: ['roles'],
     });
@@ -34,7 +34,7 @@ export class UserService {
     if (existing) {
       throw new ConflictException('邮箱已存在');
     }
-    
+
     // Convert roleIds to roles array format for TypeORM ManyToMany
     const { roleIds, ...userData } = data;
     const userToSave = { ...userData } as User;
@@ -58,13 +58,13 @@ export class UserService {
     data: Partial<User> & { roleIds?: number[] },
   ): Promise<User> {
     const { roleIds, ...userData } = data;
-    
+
     // For scalar attributes
     if (Object.keys(userData).length > 0) {
       await this.userRepo.update(id, userData);
     }
-    
-    // For many-to-many relationship we need to save the relations 
+
+    // For many-to-many relationship we need to save the relations
     if (roleIds !== undefined) {
       const user = await this.findById(id);
       if (user) {
@@ -72,7 +72,7 @@ export class UserService {
         await this.userRepo.save(user);
       }
     }
-    
+
     return this.findById(id) as Promise<User>;
   }
 

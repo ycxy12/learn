@@ -44,6 +44,8 @@ export class UserController {
     const dataToUpdate = { ...updateUserDto };
     if (dataToUpdate.password) {
       dataToUpdate.password = await bcrypt.hash(dataToUpdate.password, 10);
+    } else {
+      delete dataToUpdate.password;
     }
     return this.userService.update(+id, dataToUpdate);
   }

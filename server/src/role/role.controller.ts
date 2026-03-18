@@ -47,4 +47,16 @@ export class RoleController {
   remove(@Param('id') id: string) {
     return this.roleService.remove(+id);
   }
+
+  @Get(':id/menus')
+  @ApiOperation({ summary: '获取角色的菜单权限' })
+  getRoleMenus(@Param('id') id: string) {
+    return this.roleService.getRoleMenus(+id);
+  }
+
+  @Post(':id/menus')
+  @ApiOperation({ summary: '分配角色的菜单权限' })
+  assignMenus(@Param('id') id: string, @Body('menuIds') menuIds: number[]) {
+    return this.roleService.assignMenus(+id, menuIds);
+  }
 }

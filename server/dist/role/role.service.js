@@ -61,6 +61,25 @@ let RoleService = class RoleService {
         const role = await this.findOne(id);
         return this.roleRepo.remove(role);
     }
+    async getRoleMenus(id) {
+        const role = await this.roleRepo.findOne({
+            where: { id },
+            relations: ['menus'],
+        });
+        if (!role) {
+            throw new common_1.NotFoundException(`角色 #${id} 不存在`);
+        }
+        return role.menus;
+    }
+    async assignMenus(id, menuIds) {
+        const role = await this.roleRepo.findOne({ where: { id } });
+        if (!role) {
+            throw new common_1.NotFoundException(`角色 #${id} 不存在`);
+        }
+        role.menus = menuIds.map((menuId) => ({ id: menuId }));
+        await this.roleRepo.save(role);
+        return this.getRoleMenus(id);
+    }
 };
 exports.RoleService = RoleService;
 exports.RoleService = RoleService = __decorate([

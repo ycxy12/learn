@@ -38,6 +38,12 @@ let RoleController = class RoleController {
     remove(id) {
         return this.roleService.remove(+id);
     }
+    getRoleMenus(id) {
+        return this.roleService.getRoleMenus(+id);
+    }
+    assignMenus(id, menuIds) {
+        return this.roleService.assignMenus(+id, menuIds);
+    }
 };
 exports.RoleController = RoleController;
 __decorate([
@@ -80,6 +86,23 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RoleController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)(':id/menus'),
+    (0, swagger_1.ApiOperation)({ summary: '获取角色的菜单权限' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], RoleController.prototype, "getRoleMenus", null);
+__decorate([
+    (0, common_1.Post)(':id/menus'),
+    (0, swagger_1.ApiOperation)({ summary: '分配角色的菜单权限' }),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('menuIds')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", void 0)
+], RoleController.prototype, "assignMenus", null);
 exports.RoleController = RoleController = __decorate([
     (0, swagger_1.ApiTags)('角色管理'),
     (0, swagger_1.ApiBearerAuth)(),

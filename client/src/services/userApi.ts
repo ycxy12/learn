@@ -11,6 +11,7 @@ export interface UserItem {
   email: string
   name: string
   createdAt: string
+  password?: string
   roles?: { id: number; name: string; code: string }[]
 }
 

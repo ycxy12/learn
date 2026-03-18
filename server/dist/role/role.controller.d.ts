@@ -9,4 +9,6 @@ export declare class RoleController {
     findOne(id: string): Promise<import("./entities/role.entity").Role>;
     update(id: string, updateRoleDto: UpdateRoleDto): Promise<import("./entities/role.entity").Role>;
     remove(id: string): Promise<import("./entities/role.entity").Role>;
+    getRoleMenus(id: string): Promise<import("../menu/entities/menu.entity").Menu[]>;
+    assignMenus(id: string, menuIds: number[]): Promise<import("../menu/entities/menu.entity").Menu[]>;
 }

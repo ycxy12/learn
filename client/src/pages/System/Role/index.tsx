@@ -14,9 +14,11 @@ import {
   Space,
   Typography,
   message,
+  Tree,
 } from 'antd'
-import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons'
+import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, SafetyCertificateOutlined } from '@ant-design/icons'
 import { roleApi, type Role, type CreateRoleDto } from '@/services/roleApi'
+import { menuApi, type MenuItem } from '@/services/menuApi'
 
 const { Title, Text } = Typography
 
@@ -26,6 +28,12 @@ export default function RoleManagePage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editingRole, setEditingRole] = useState<Role | null>(null)
   const [form] = Form.useForm()
+
+  const [rightsModalOpen, setRightsModalOpen] = useState(false)
+  const [currentRole, setCurrentRole] = useState<Role | null>(null)
+  const [menuTreeData, setMenuTreeData] = useState<MenuItem[]>([])
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
+  const [menusLoading, setMenusLoading] = useState(false)
 
   const loadRoles = useCallback(async () => {
     setLoading(true)
@@ -82,6 +90,43 @@ export default function RoleManagePage() {
     }
   }
 
+  const openRights = async (record: Role) => {
+    setCurrentRole(record)
+    setRightsModalOpen(true)
+    setMenusLoading(true)
+    try {
+      const tree = await menuApi.getTree()
+      setMenuTreeData(tree)
+
+      const roleMenus = await roleApi.getMenus(record.id)
+      const keys = roleMenus.map((m) => m.id)
+      setCheckedKeys(keys)
+    } catch {
+      message.error('获取权限数据失败')
+    } finally {
+      setMenusLoading(false)
+    }
+  }
+
+  const handleRightsSubmit = async () => {
+    if (!currentRole) return
+    try {
+      await roleApi.assignMenus(currentRole.id, checkedKeys.map(Number))
+      message.success('更新权限成功')
+      setRightsModalOpen(false)
+    } catch {
+      message.error('更新权限失败')
+    }
+  }
+
+  const onCheck = (checkedKeysValue: React.Key[] | { checked: React.Key[]; halfChecked: React.Key[] }) => {
+    if (Array.isArray(checkedKeysValue)) {
+      setCheckedKeys(checkedKeysValue)
+    } else {
+      setCheckedKeys(checkedKeysValue.checked)
+    }
+  }
+
   const columns = [
     {
       title: '角色名称',
@@ -115,6 +160,14 @@ export default function RoleManagePage() {
             onClick={() => openEdit(record)}
           >
             编辑
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            icon={<SafetyCertificateOutlined />}
+            onClick={() => openRights(record)}
+          >
+            权限
           </Button>
           <Popconfirm
             title="确认删除"
@@ -191,6 +244,32 @@ export default function RoleManagePage() {
             <Input.TextArea placeholder="请输入角色描述" rows={3} />
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 权限分配弹窗 */}
+      <Modal
+        title={`分配权限: ${currentRole?.name || ''}`}
+        open={rightsModalOpen}
+        onOk={handleRightsSubmit}
+        onCancel={() => setRightsModalOpen(false)}
+        okText="保存权限"
+        cancelText="取消"
+        destroyOnHidden
+      >
+        <div style={{ marginTop: 16, maxHeight: 400, overflow: 'auto' }}>
+          {menusLoading ? (
+            <div style={{ textAlign: 'center', padding: '20px 0' }}>加载中...</div>
+          ) : (
+            <Tree
+              checkable
+              defaultExpandAll
+              checkedKeys={checkedKeys}
+              onCheck={onCheck}
+              treeData={menuTreeData}
+              fieldNames={{ title: 'name', key: 'id', children: 'children' }}
+            />
+          )}
+        </div>
       </Modal>
     </div>
   )

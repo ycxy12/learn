@@ -3,6 +3,8 @@
  */
 
 import { fetchWithAuth } from '../stores/useAuthStore'
+import { type MenuItem } from './menuApi'
+
 
 const API_BASE = 'http://localhost:3000'
 
@@ -62,5 +64,22 @@ export const roleApi = {
       method: 'DELETE',
     })
     if (!res.ok) throw new Error('删除角色失败')
+  },
+
+  /** 获取角色的菜单权限 */
+  async getMenus(id: number): Promise<MenuItem[]> {
+    const res = await fetchWithAuth(`${API_BASE}/role/${id}/menus`)
+    if (!res.ok) throw new Error('获取角色菜单失败')
+    return res.json()
+  },
+
+  /** 分配角色的菜单权限 */
+  async assignMenus(id: number, menuIds: number[]): Promise<MenuItem[]> {
+    const res = await fetchWithAuth(`${API_BASE}/role/${id}/menus`, {
+      method: 'POST',
+      body: JSON.stringify({ menuIds }),
+    })
+    if (!res.ok) throw new Error('分配角色菜单失败')
+    return res.json()
   },
 }

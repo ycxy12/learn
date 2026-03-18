@@ -8,6 +8,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
+import { Menu } from '../menu/entities/menu.entity';
 
 @Injectable()
 export class RoleService {
@@ -61,5 +62,27 @@ export class RoleService {
   async remove(id: number) {
     const role = await this.findOne(id);
     return this.roleRepo.remove(role);
+  }
+
+  async getRoleMenus(id: number) {
+    const role = await this.roleRepo.findOne({
+      where: { id },
+      relations: ['menus'],
+    });
+    if (!role) {
+      throw new NotFoundException(`角色 #${id} 不存在`);
+    }
+    return role.menus;
+  }
+
+  async assignMenus(id: number, menuIds: number[]) {
+    const role = await this.roleRepo.findOne({ where: { id } });
+    if (!role) {
+      throw new NotFoundException(`角色 #${id} 不存在`);
+    }
+    // We only need the IDs to set the ManyToMany relationship
+    role.menus = menuIds.map((menuId) => ({ id: menuId }) as unknown as Menu);
+    await this.roleRepo.save(role);
+    return this.getRoleMenus(id);
   }
 }
