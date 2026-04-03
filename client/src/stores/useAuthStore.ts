@@ -14,6 +14,7 @@ export interface User {
   id: number
   email: string
   name: string
+  permissions: string[]
 }
 
 interface AuthState {
@@ -55,28 +56,3 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 )
-
-/**
- * 带认证的 fetch 封装
- */
-export async function fetchWithAuth(url: string, options: RequestInit = {}) {
-  const token = useAuthStore.getState().token
-  
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  }
-  
-  if (token) {
-    (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`
-  }
-  
-  const res = await fetch(url, { ...options, headers })
-  
-  // 如果 401，自动登出
-  if (res.status === 401) {
-    useAuthStore.getState().logout()
-  }
-  
-  return res
-}

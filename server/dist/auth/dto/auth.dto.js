@@ -26,6 +26,7 @@ __decorate([
     (0, swagger_1.ApiProperty)({ example: '123456', description: '密码' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)({ message: '密码不能为空' }),
+    (0, class_validator_1.Length)(6, 20, { message: '密码长度必须在6到20个字符之间' }),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
 class RegisterDto {
@@ -41,15 +42,16 @@ __decorate([
     __metadata("design:type", String)
 ], RegisterDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '123456', description: '密码，至少6位' }),
+    (0, swagger_1.ApiProperty)({ example: '123456', description: '密码，6-20位' }),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(6, { message: '密码至少6位' }),
+    (0, class_validator_1.Length)(6, 20, { message: '密码长度必须在6到20个字符之间' }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '张三', description: '用户名' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)({ message: '用户名不能为空' }),
+    (0, class_validator_1.Length)(2, 50, { message: '用户名长度必须在2到50个字符之间' }),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "name", void 0);
 __decorate([

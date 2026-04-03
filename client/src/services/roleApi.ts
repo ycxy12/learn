@@ -2,11 +2,8 @@
  * 角色 API 服务
  */
 
-import { fetchWithAuth } from '../stores/useAuthStore'
+import request from '../utils/request'
 import { type MenuItem } from './menuApi'
-
-
-const API_BASE = 'http://localhost:3000'
 
 export interface Role {
   id: number
@@ -26,60 +23,36 @@ export type UpdateRoleDto = Partial<CreateRoleDto>
 export const roleApi = {
   /** 获取所有角色 */
   async findAll(): Promise<Role[]> {
-    const res = await fetchWithAuth(`${API_BASE}/role`)
-    if (!res.ok) throw new Error('获取角色失败')
-    return res.json()
+    return request.get('/role')
   },
 
   /** 获取单个角色 */
   async findOne(id: number): Promise<Role> {
-    const res = await fetchWithAuth(`${API_BASE}/role/${id}`)
-    if (!res.ok) throw new Error('获取详情失败')
-    return res.json()
+    return request.get(`/role/${id}`)
   },
 
   /** 创建角色 */
   async create(data: CreateRoleDto): Promise<Role> {
-    const res = await fetchWithAuth(`${API_BASE}/role`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
-    if (!res.ok) throw new Error('创建角色失败')
-    return res.json()
+    return request.post('/role', data)
   },
 
   /** 更新角色 */
   async update(id: number, data: UpdateRoleDto): Promise<Role> {
-    const res = await fetchWithAuth(`${API_BASE}/role/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    })
-    if (!res.ok) throw new Error('更新角色失败')
-    return res.json()
+    return request.patch(`/role/${id}`, data)
   },
 
   /** 删除角色 */
   async remove(id: number): Promise<void> {
-    const res = await fetchWithAuth(`${API_BASE}/role/${id}`, {
-      method: 'DELETE',
-    })
-    if (!res.ok) throw new Error('删除角色失败')
+    return request.delete(`/role/${id}`)
   },
 
   /** 获取角色的菜单权限 */
   async getMenus(id: number): Promise<MenuItem[]> {
-    const res = await fetchWithAuth(`${API_BASE}/role/${id}/menus`)
-    if (!res.ok) throw new Error('获取角色菜单失败')
-    return res.json()
+    return request.get(`/role/${id}/menus`)
   },
 
   /** 分配角色的菜单权限 */
   async assignMenus(id: number, menuIds: number[]): Promise<MenuItem[]> {
-    const res = await fetchWithAuth(`${API_BASE}/role/${id}/menus`, {
-      method: 'POST',
-      body: JSON.stringify({ menuIds }),
-    })
-    if (!res.ok) throw new Error('分配角色菜单失败')
-    return res.json()
+    return request.post(`/role/${id}/menus`, { menuIds })
   },
 }

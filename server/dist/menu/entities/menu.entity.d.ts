@@ -5,6 +5,8 @@ export declare class Menu {
     component: string;
     icon: string;
     sort: number;
+    type: string;
+    perms: string;
     parentId: number;
     isVisible: boolean;
     createdAt: Date;

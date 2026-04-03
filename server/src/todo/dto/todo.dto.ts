@@ -9,30 +9,30 @@ import {
   IsNotEmpty,
   IsOptional,
   IsBoolean,
-  MaxLength,
+  Length,
 } from 'class-validator';
 
 export class CreateTodoDto {
   @IsString({ message: '标题必须是字符串' })
   @IsNotEmpty({ message: '标题不能为空' })
-  @MaxLength(100, { message: '标题不能超过100个字符' })
+  @Length(1, 100, { message: '标题长度必须在1到100个字符之间' })
   title: string;
 
   @IsString()
   @IsOptional()
-  @MaxLength(500)
+  @Length(0, 500, { message: '描述不能超过500个字符' })
   description?: string;
 }
 
 export class UpdateTodoDto {
   @IsString()
   @IsOptional()
-  @MaxLength(100)
+  @Length(1, 100, { message: '标题长度必须在1到100个字符之间' })
   title?: string;
 
   @IsString()
   @IsOptional()
-  @MaxLength(500)
+  @Length(0, 500, { message: '描述不能超过500个字符' })
   description?: string;
 
   @IsBoolean()

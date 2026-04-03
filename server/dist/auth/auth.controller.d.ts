@@ -9,6 +9,7 @@ export declare class AuthController {
             id: number;
             email: string;
             name: string;
+            permissions: string[];
         };
     }>;
     login(dto: LoginDto): Promise<{
@@ -17,6 +18,7 @@ export declare class AuthController {
             id: number;
             email: string;
             name: string;
+            permissions: string[];
         };
     }>;
     getProfile(req: {
@@ -24,6 +26,7 @@ export declare class AuthController {
             userId: number;
         };
     }): Promise<{
+        permissions: string[];
         id: number;
         email: string;
         name: string;

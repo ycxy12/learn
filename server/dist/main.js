@@ -4,6 +4,8 @@ const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const app_module_1 = require("./app.module");
+const transform_interceptor_1 = require("./common/interceptors/transform.interceptor");
+const http_exception_filter_1 = require("./common/filters/http-exception.filter");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
@@ -15,6 +17,8 @@ async function bootstrap() {
         transform: true,
         forbidNonWhitelisted: true,
     }));
+    app.useGlobalInterceptors(new transform_interceptor_1.TransformInterceptor());
+    app.useGlobalFilters(new http_exception_filter_1.HttpExceptionFilter());
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Todo API')
         .setDescription('React + NestJS 全栈学习项目 API 文档')
@@ -30,5 +34,5 @@ async function bootstrap() {
     console.log(`🚀 NestJS 服务已启动: http://localhost:${port}`);
     console.log(`📚 API 文档: http://localhost:${port}/api`);
 }
-bootstrap();
+bootstrap().catch(console.error);
 //# sourceMappingURL=main.js.map

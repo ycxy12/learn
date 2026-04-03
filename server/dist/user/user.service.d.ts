@@ -13,4 +13,5 @@ export declare class UserService {
         roleIds?: number[];
     }): Promise<User>;
     remove(id: number): Promise<void>;
+    getUserPermissions(id: number): Promise<string[]>;
 }

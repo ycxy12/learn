@@ -26,6 +26,12 @@ export class Menu {
   @Column({ default: 0 })
   sort: number;
 
+  @Column({ nullable: true, comment: '菜单类型: DIR, MENU, BUTTON' })
+  type: string;
+
+  @Column({ nullable: true, comment: '权限标识，如: user:create' })
+  perms: string;
+
   @Column({ nullable: true })
   parentId: number;
 

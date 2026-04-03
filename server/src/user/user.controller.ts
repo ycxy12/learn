@@ -14,10 +14,12 @@ import { UserService } from './user.service';
 import { RegisterDto } from '../auth/dto/auth.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { Permissions } from '../common/decorators/permissions.decorator';
+import { PermissionsGuard } from '../common/guards/permissions.guard';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), PermissionsGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -29,6 +31,7 @@ export class UserController {
   }
 
   @Post()
+  @Permissions('user:create')
   @ApiOperation({ summary: '新增用户' })
   async create(@Body() createUserDto: RegisterDto) {
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);

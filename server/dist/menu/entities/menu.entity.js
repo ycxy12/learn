@@ -18,6 +18,8 @@ let Menu = class Menu {
     component;
     icon;
     sort;
+    type;
+    perms;
     parentId;
     isVisible;
     createdAt;
@@ -48,6 +50,14 @@ __decorate([
     (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], Menu.prototype, "sort", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, comment: '菜单类型: DIR, MENU, BUTTON' }),
+    __metadata("design:type", String)
+], Menu.prototype, "type", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true, comment: '权限标识，如: user:create' }),
+    __metadata("design:type", String)
+], Menu.prototype, "perms", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)

@@ -53,6 +53,8 @@ const user_service_1 = require("./user.service");
 const auth_dto_1 = require("../auth/dto/auth.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const bcrypt = __importStar(require("bcrypt"));
+const permissions_decorator_1 = require("../common/decorators/permissions.decorator");
+const permissions_guard_1 = require("../common/guards/permissions.guard");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -92,6 +94,7 @@ __decorate([
 ], UserController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Post)(),
+    (0, permissions_decorator_1.Permissions)('user:create'),
     (0, swagger_1.ApiOperation)({ summary: '新增用户' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -118,7 +121,7 @@ __decorate([
 exports.UserController = UserController = __decorate([
     (0, swagger_1.ApiTags)('用户管理'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), permissions_guard_1.PermissionsGuard),
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);

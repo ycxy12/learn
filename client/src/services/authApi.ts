@@ -2,7 +2,7 @@
  * 📚 第四阶段 - 认证 API 服务
  */
 
-const API_BASE = 'http://localhost:3000'
+import request from '../utils/request'
 
 export interface LoginData {
   email: string
@@ -21,33 +21,16 @@ export interface AuthResponse {
     id: number
     email: string
     name: string
+    permissions: string[]
   }
 }
 
 export const authApi = {
   async login(data: LoginData): Promise<AuthResponse> {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.message || '登录失败')
-    }
-    return res.json()
+    return request.post('/auth/login', data)
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const res = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    if (!res.ok) {
-      const error = await res.json()
-      throw new Error(error.message || '注册失败')
-    }
-    return res.json()
+    return request.post('/auth/register', data)
   },
 }

@@ -23,7 +23,8 @@ export class AuthService {
   async validateUser(email: string, password: string) {
     const user = await this.userService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password: _, ...result } = user;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _password, ...result } = user;
       return result;
     }
     return null;
@@ -39,12 +40,15 @@ export class AuthService {
     }
 
     const payload = { email: user.email, sub: user.id };
+    const permissions = await this.userService.getUserPermissions(user.id);
+
     return {
       access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
+        permissions,
       },
     };
   }
@@ -61,12 +65,15 @@ export class AuthService {
     });
 
     const payload = { email: user.email, sub: user.id };
+    const permissions = await this.userService.getUserPermissions(user.id);
+
     return {
       access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
+        permissions,
       },
     };
   }
@@ -79,7 +86,14 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('用户不存在');
     }
-    const { password: _, ...result } = user;
-    return result;
+
+    const permissions = await this.userService.getUserPermissions(userId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _password, ...result } = user;
+
+    return {
+      ...result,
+      permissions,
+    };
   }
 }

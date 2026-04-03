@@ -18,6 +18,7 @@ export declare class AuthService {
             id: number;
             email: string;
             name: string;
+            permissions: string[];
         };
     }>;
     register(dto: RegisterDto): Promise<{
@@ -26,9 +27,11 @@ export declare class AuthService {
             id: number;
             email: string;
             name: string;
+            permissions: string[];
         };
     }>;
     getProfile(userId: number): Promise<{
+        permissions: string[];
         id: number;
         email: string;
         name: string;

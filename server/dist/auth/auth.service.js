@@ -57,7 +57,7 @@ let AuthService = class AuthService {
     async validateUser(email, password) {
         const user = await this.userService.findByEmail(email);
         if (user && (await bcrypt.compare(password, user.password))) {
-            const { password: _, ...result } = user;
+            const { password: _password, ...result } = user;
             return result;
         }
         return null;
@@ -68,12 +68,14 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('邮箱或密码错误');
         }
         const payload = { email: user.email, sub: user.id };
+        const permissions = await this.userService.getUserPermissions(user.id);
         return {
             access_token: this.jwtService.sign(payload),
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
+                permissions,
             },
         };
     }
@@ -85,12 +87,14 @@ let AuthService = class AuthService {
             name: dto.name,
         });
         const payload = { email: user.email, sub: user.id };
+        const permissions = await this.userService.getUserPermissions(user.id);
         return {
             access_token: this.jwtService.sign(payload),
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
+                permissions,
             },
         };
     }
@@ -99,8 +103,12 @@ let AuthService = class AuthService {
         if (!user) {
             throw new common_1.UnauthorizedException('用户不存在');
         }
-        const { password: _, ...result } = user;
-        return result;
+        const permissions = await this.userService.getUserPermissions(userId);
+        const { password: _password, ...result } = user;
+        return {
+            ...result,
+            permissions,
+        };
     }
 };
 exports.AuthService = AuthService;

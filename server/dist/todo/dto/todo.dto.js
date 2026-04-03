@@ -19,13 +19,13 @@ exports.CreateTodoDto = CreateTodoDto;
 __decorate([
     (0, class_validator_1.IsString)({ message: '标题必须是字符串' }),
     (0, class_validator_1.IsNotEmpty)({ message: '标题不能为空' }),
-    (0, class_validator_1.MaxLength)(100, { message: '标题不能超过100个字符' }),
+    (0, class_validator_1.Length)(1, 100, { message: '标题长度必须在1到100个字符之间' }),
     __metadata("design:type", String)
 ], CreateTodoDto.prototype, "title", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.MaxLength)(500),
+    (0, class_validator_1.Length)(0, 500, { message: '描述不能超过500个字符' }),
     __metadata("design:type", String)
 ], CreateTodoDto.prototype, "description", void 0);
 class UpdateTodoDto {
@@ -37,13 +37,13 @@ exports.UpdateTodoDto = UpdateTodoDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.MaxLength)(100),
+    (0, class_validator_1.Length)(1, 100, { message: '标题长度必须在1到100个字符之间' }),
     __metadata("design:type", String)
 ], UpdateTodoDto.prototype, "title", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.MaxLength)(500),
+    (0, class_validator_1.Length)(0, 500, { message: '描述不能超过500个字符' }),
     __metadata("design:type", String)
 ], UpdateTodoDto.prototype, "description", void 0);
 __decorate([

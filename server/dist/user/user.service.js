@@ -70,6 +70,23 @@ let UserService = class UserService {
     async remove(id) {
         await this.userRepo.delete(id);
     }
+    async getUserPermissions(id) {
+        const user = await this.userRepo.findOne({
+            where: { id },
+            relations: ['roles', 'roles.menus'],
+        });
+        if (!user)
+            return [];
+        const permsSet = new Set();
+        for (const role of user.roles || []) {
+            for (const menu of role.menus || []) {
+                if (menu.perms) {
+                    permsSet.add(menu.perms);
+                }
+            }
+        }
+        return Array.from(permsSet);
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
