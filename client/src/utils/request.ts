@@ -1,10 +1,11 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { type InternalAxiosRequestConfig, type AxiosResponse, type AxiosError } from 'axios';
 import { message } from 'antd';
 import { useAuthStore } from '../stores/useAuthStore';
 
 // 创建 axios 实例
 const request = axios.create({
-  baseURL: 'http://localhost:3000',
+  // 如果是生产环境打包后的代码，请求 /api 触发 Nginx 代理；本地开发环境依然请求 localhost:3000
+  baseURL: import.meta.env.PROD ? '/api' : 'http://localhost:3000',
   timeout: 10000,
 });
 
